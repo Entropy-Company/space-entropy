@@ -29,14 +29,17 @@ public sealed class SpriteFadeSystem : EntitySystem
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
 
-    private List<(MapCoordinates Point, bool ExcludeBoundingBox)> _points = new();
-
     private readonly HashSet<FadingSpriteComponent> _comps = new();
 
     private EntityQuery<SpriteComponent> _spriteQuery;
     private EntityQuery<SpriteFadeComponent> _fadeQuery;
     private EntityQuery<FadingSpriteComponent> _fadingQuery;
     private EntityQuery<FixturesComponent> _fixturesQuery;
+
+    /// <summary>
+    ///     Radius of the mouse point for the intersection test
+    /// </summary>
+    private static Vector2 MouseRadius = new Vector2(10f * float.Epsilon, 10f * float.Epsilon);
 
     private const float TargetAlpha = 0.4f;
     private const float ChangeRate = 1f;
@@ -68,22 +71,22 @@ public sealed class SpriteFadeSystem : EntitySystem
     {
         var player = _playerManager.LocalEntity;
         // ExcludeBoundingBox is set if we don't want to fade this sprite within the collision bounding boxes for the given POI
-        _points.Clear();
+        var pointsOfInterest = new List<(MapCoordinates Point, bool ExcludeBoundingBox)>();
 
         if (_uiManager.CurrentlyHovered is IViewportControl vp
             && _inputManager.MouseScreenPosition.IsValid)
         {
-            _points.Add((vp.PixelToMap(_inputManager.MouseScreenPosition.Position), true));
+            pointsOfInterest.Add((vp.PixelToMap(_inputManager.MouseScreenPosition.Position), true));
         }
 
         if (TryComp(player, out TransformComponent? playerXform))
         {
-            _points.Add((_transform.GetMapCoordinates(_playerManager.LocalEntity!.Value, xform: playerXform), false));
+            pointsOfInterest.Add((_transform.GetMapCoordinates(_playerManager.LocalEntity!.Value, xform: playerXform), false));
         }
 
         if (_stateManager.CurrentState is GameplayState state && _spriteQuery.TryGetComponent(player, out var playerSprite))
         {
-            foreach (var (mapPos, excludeBB) in _points)
+            foreach (var (mapPos, excludeBB) in pointsOfInterest)
             {
                 // Also want to handle large entities even if they may not be clickable.
                 foreach (var ent in state.GetClickableEntities(mapPos, excludeFaded: false))
@@ -96,28 +99,21 @@ public sealed class SpriteFadeSystem : EntitySystem
                         continue;
                     }
 
-                    // If it intersects a fixture ignore it.
-                    if (excludeBB && _fixturesQuery.TryComp(ent, out var body))
+                    if (excludeBB)
                     {
-                        var transform = _physics.GetPhysicsTransform(ent);
+                        var test = new Box2Rotated(mapPos.Position - MouseRadius, mapPos.Position + MouseRadius);
                         var collided = false;
-
-                        foreach (var fixture in body.Fixtures.Values)
+                        foreach (var fixture in _physics.GetCollidingEntities(mapPos.MapId, test))
                         {
-                            if (!fixture.Hard)
-                                continue;
-
-                            if (_fixtures.TestPoint(fixture.Shape, transform, mapPos.Position))
+                            if (fixture.Owner == ent)
                             {
                                 collided = true;
                                 break;
                             }
                         }
-
-                        // Check next entity
                         if (collided)
                         {
-                            continue;
+                            break;
                         }
                     }
 
