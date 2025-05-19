@@ -27,8 +27,7 @@
   recipeUnlocks:
   - RadarConsoleCircuitboard
   - HandHeldMassScanner
-  - BorgModuleGPS
-
+  
 - type: technology
   id: AdvancedPowercells
   name: research-technology-advanced-powercells
@@ -182,7 +181,7 @@
     - OreBagOfHolding
     - MiningDrillDiamond
     - AdvancedMineralScannerEmpty
-    - SalvageExpeditionsComputerCircuitboard # Corvax-Cringe
+    - BorgModuleAdvancedMining
 
 # Tier 3
 
