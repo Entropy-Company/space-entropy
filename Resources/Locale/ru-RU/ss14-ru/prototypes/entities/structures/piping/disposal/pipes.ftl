@@ -29,3 +29,5 @@ ent-DisposalSignalRouter = сигнальный утилизационный м�
 ent-DisposalSignalRouterFlipped = { ent-DisposalSignalRouter }
     .suffix = Перевёрнутый
     .desc = { ent-DisposalSignalRouter.desc }
+ent-DisposalXJunction = развязка утилизационной трубы
+    .desc = Четырехсторонняя развязка. Стрелка указывает на место выхода объектов.
