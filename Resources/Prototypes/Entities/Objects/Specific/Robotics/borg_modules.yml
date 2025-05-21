@@ -368,7 +368,8 @@
     - MiningDrill
     - Shovel
     - MineralScannerUnpowered
-    - BorgOreBag
+    - OreBag
+    - RadioHandheld
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: mining-module }
 

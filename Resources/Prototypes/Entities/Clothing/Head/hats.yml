@@ -194,6 +194,22 @@
 
 - type: entity
   parent: ClothingHeadBase
+  id: ClothingHeadHatBeretCommand
+  name: command beret
+  description: A beret with a Command insignia emblazoned on it. It has an aura of authority.
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Hats/beret_command.rsi
+  - type: Clothing
+    sprite: Clothing/Head/Hats/beret_command.rsi
+  - type: Tag
+    tags:
+    - ClothMade
+    - HamsterWearable
+    - WhitelistChameleon
+
+- type: entity
+  parent: ClothingHeadBase
   id: ClothingHeadHatBowlerHat
   name: bowler hat
   description: Stylish bowler hat.
@@ -1148,3 +1164,14 @@
     sprite: Clothing/Head/Hats/beret_medic.rsi
   - type: Clothing
     sprite: Clothing/Head/Hats/beret_medic.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatSolidHeadband
+  name: solid headband
+  description: "You'll feel like you're Invisible while wearing this! (DISCLAIMER: DOES NOT ACTUALLY MAKE THE WEARER INVISIBLE)"
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Hats/solidheadband.rsi
+  - type: Clothing
+    sprite: Clothing/Head/Hats/solidheadband.rsi
